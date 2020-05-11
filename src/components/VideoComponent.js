@@ -23,7 +23,7 @@ const VideoComponent = (props) => {
         event.preventDefault();
         console.log({username,
           roomName})
-        const { data } = await axios.post('/video/token', {
+        const { data } = await axios.post('http://localhost:8081/video/token', {
          data: {identity: username,
           room: roomName},
         });

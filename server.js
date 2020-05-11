@@ -4,7 +4,14 @@ const express = require("express");
 const request = require("request");
 const bodyParser = require("body-parser");
 
+var cors = require('cors')
+
+
+
+
+
 const app = express();
+app.use(cors())
 const path = require("path");
 const AccessToken = require("twilio").jwt.AccessToken;
 const VideoGrant = AccessToken.VideoGrant;
@@ -22,15 +29,15 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get("/video/token", (req, res) => {
-  request({ url: "https://localhost:8081" }, (error, response, body) => {
-    if (error || response.statusCode !== 200) {
-      return res.status(500).json({ type: "error", message: error.message });
-    }
+// app.get("/video/token", (req, res) => {
+//   request({ url: "https://localhost:8081" }, (error, response, body) => {
+//     if (error || response.statusCode !== 200) {
+//       return res.status(500).json({ type: "error", message: error.message });
+//     }
 
-    res.json(JSON.parse(body));
-  });
-});
+//     res.json(JSON.parse(body));
+//   });
+// });
 
 const sendTokenResponse = (token, res) => {
   res.set("Content-Type", "application/json");
