@@ -4,14 +4,10 @@ const express = require("express");
 const request = require("request");
 const bodyParser = require("body-parser");
 
-var cors = require('cors')
-
-
-
-
+var cors = require("cors");
 
 const app = express();
-app.use(cors())
+app.use(cors());
 const path = require("path");
 const AccessToken = require("twilio").jwt.AccessToken;
 const VideoGrant = AccessToken.VideoGrant;

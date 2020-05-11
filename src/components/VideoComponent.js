@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Video from 'twilio-video';
 import axios from 'axios';
-import { Lobby } from '.';
+import { Lobby, Room } from '.';
 
 
 const VideoComponent = (props) => {
@@ -44,11 +44,7 @@ const VideoComponent = (props) => {
   let render;
   if (token) {
     render = (
-      <div>
-        <p>Username: {username}</p>
-        <p>Room name: {roomName}</p>
-        <p>Token: {token}</p>
-      </div>
+      <Room roomName={roomName} token={token} handleLogout={handleLogout} />
     );
   } else {
     render = (
