@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Video from 'twilio-video';
 
+
+
 const Room = ({ roomName, token, handleLogout }) => {
     const [room, setRoom] = useState(null);
     const [participants, setParticipants] = useState([]);
@@ -8,6 +10,27 @@ const Room = ({ roomName, token, handleLogout }) => {
     const remoteParticipants = participants.map(participant => (
       <p key={participant.sid}>{participant.identity}</p>
     ));
+
+    useEffect(() => {
+        const participantConnected = participant => {
+          setParticipants(prevParticipants => [...prevParticipants, participant]);
+        };
+        const participantDisconnected = participant => {
+          setParticipants(prevParticipants =>
+            prevParticipants.filter(p => p !== participant)
+          );
+        };
+        Video.connect(token, {
+          name: roomName
+        }).then(room => {
+          setRoom(room);
+          room.on('participantConnected', participantConnected);
+          room.on('participantDisconnected', participantDisconnected);
+          room.participants.forEach(participantConnected);
+        });
+      });
+
+      
   
     return (
       <div className="room">
