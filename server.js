@@ -1,6 +1,7 @@
 require("dotenv").config();
 
 const express = require("express");
+const request = require('request')
 
 const app = express();
 const path = require("path");
@@ -13,10 +14,23 @@ const twilioApiKeySID = process.env.TWILIO_API_KEY_SID;
 const twilioApiKeySecret = process.env.TWILIO_API_KEY_SECRET;
 
 
-// app.use((req, res, next) => {
-//   res.header('Access-Control-Allow-Origin', '*');
-//   next();
-// });
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  next();
+});
+
+app.get('/video/token', (req, res) => {
+  request(
+    { url: 'https://localhost:8081' },
+    (error, response, body) => {
+      if (error || response.statusCode !== 200) {
+        return res.status(500).json({ type: 'error', message: error.message });
+      }
+
+      res.json(JSON.parse(body));
+    }
+  )
+});
 
 const sendTokenResponse = (token, res) => {
   res.set('Content-Type', 'application/json');
@@ -75,6 +89,7 @@ app.get('/video/token', (req, res) => {
 });
 
 app.post('/video/token', (req, res) => {
+  console.log("What is req", req.body)
   const identity = req.body.identity;
   const room = req.body.room;
   const token = videoToken(identity, room, {twilio:{twilioAccountSid,twilioApiKeySID,twilioApiKeySecret}});

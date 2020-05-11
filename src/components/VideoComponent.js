@@ -19,12 +19,20 @@ const VideoComponent = (props) => {
 
   const handleSubmit = useCallback(
     async (event) => {
-      event.preventDefault();
-      const { data } = await axios.post('http://localhost:8081/video/token', {
-        identity: username,
-        room: roomName,
-      });
-      setToken(data.token);
+      try{
+        event.preventDefault();
+        console.log({username,
+          roomName})
+        const { data } = await axios.post('/video/token', {
+         data: {identity: username,
+          room: roomName},
+        });
+        
+        setToken(data.token);
+
+      } catch(error) {
+        console.log("Oops I did it again", error)
+      }
     },
     [username, roomName]
   );
