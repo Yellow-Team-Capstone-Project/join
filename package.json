@@ -7,6 +7,7 @@
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "axios": "^0.19.2",
+    "body-parser": "^1.19.0",
     "concurrently": "^5.2.0",
     "cross-env": "^7.0.2",
     "dotenv": "^8.2.0",
@@ -16,11 +17,12 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1",
+    "request": "^2.88.2",
     "twilio": "^3.43.0",
     "twilio-video": "^2.4.0"
   },
   "scripts": {
-    "start": "concurrently npm:server",
+    "start": "concurrently npm:server npm:dev",
     "dev": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
