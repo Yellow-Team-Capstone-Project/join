@@ -3,6 +3,7 @@ import Video from 'twilio-video';
 import axios from 'axios';
 import { Lobby } from '.';
 
+
 const VideoComponent = (props) => {
   const [username, setUsername] = useState('');
   const [roomName, setRoomName] = useState('');
@@ -19,7 +20,7 @@ const VideoComponent = (props) => {
   const handleSubmit = useCallback(
     async (event) => {
       event.preventDefault();
-      const { data } = await axios.post('/video/token', {
+      const { data } = await axios.post('http://localhost:8081/video/token', {
         identity: username,
         room: roomName,
       });
@@ -47,6 +48,7 @@ const VideoComponent = (props) => {
         username={username}
         roomName={roomName}
         handleUsernameChange={handleUsernameChange}
+        handleRoomNameChange={handleRoomNameChange}
         handleSubmit={handleSubmit}
       />
     );
