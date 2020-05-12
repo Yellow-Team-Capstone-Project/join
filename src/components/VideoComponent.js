@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import Video from 'twilio-video';
+import React, { useState,  useCallback } from 'react';
 import axios from 'axios';
 import { Lobby, Room } from '.';
 

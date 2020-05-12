@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Video from 'twilio-video';
+import {Participant} from '.';
 
 
 
@@ -28,17 +29,33 @@ const Room = ({ roomName, token, handleLogout }) => {
           room.on('participantDisconnected', participantDisconnected);
           room.participants.forEach(participantConnected);
         });
-      });
+        return () => {
+          setRoom(currentRoom => {
+            if (currentRoom && currentRoom.localParticipant.state === 'connected') {
+              currentRoom.localParticipant.tracks.forEach(function(trackPublication) {
+                trackPublication.track.stop();
+              });
+              currentRoom.disconnect();
+              return null;
+            } else {
+              return currentRoom;
+            }
+          });
+        };
+      },[roomName, token]);
 
       
-  
+
     return (
       <div className="room">
         <h2>Room: {roomName}</h2>
         <button onClick={handleLogout}>Log out</button>
         <div className="local-participant">
           {room ? (
-            <p key={room.localParticipant.sid}>{room.localParticipant.identity}</p>
+             <Participant
+             key={room.localParticipant.sid}
+             participant={room.localParticipant}
+           />
           ) : (
             ''
           )}
