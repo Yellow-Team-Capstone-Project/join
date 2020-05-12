@@ -1,17 +1,17 @@
-require("dotenv").config();
+require('dotenv').config();
 
-const express = require("express");
+const express = require('express');
 // const request = require("request");
-const bodyParser = require("body-parser");
+const bodyParser = require('body-parser');
 
-var cors = require("cors");
+var cors = require('cors');
 
 const app = express();
 app.use(cors());
-const path = require("path");
-const AccessToken = require("twilio").jwt.AccessToken;
+const path = require('path');
+const AccessToken = require('twilio').jwt.AccessToken;
 const VideoGrant = AccessToken.VideoGrant;
-
+const config = require('./config');
 const MAX_ALLOWED_SESSION_DURATION = 1800;
 const twilioAccountSid = process.env.TWILIO_ACCOUNT_SID;
 const twilioApiKeySID = process.env.TWILIO_API_KEY_SID;
@@ -21,7 +21,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
+  res.header('Access-Control-Allow-Origin', '*');
   next();
 });
 
@@ -36,7 +36,7 @@ app.use((req, res, next) => {
 // });
 
 const sendTokenResponse = (token, res) => {
-  res.set("Content-Type", "application/json");
+  res.set('Content-Type', 'application/json');
   res.send(
     JSON.stringify({
       token: token.toJwt(),
@@ -46,15 +46,15 @@ const sendTokenResponse = (token, res) => {
 
 const generateToken = (config) => {
   return new AccessToken(
-    config.twilio.twilioAccountSid,
-    config.twilio.twilioApiKeySID,
-    config.twilio.twilioApiKeySecret
+    config.twilio.accountSid,
+    config.twilio.apiKey,
+    config.twilio.apiSecret
   );
 };
 
 const videoToken = (identity, room, config) => {
   let videoGrant;
-  if (typeof room !== "undefined") {
+  if (typeof room !== 'undefined') {
     videoGrant = new VideoGrant({ room });
   } else {
     videoGrant = new VideoGrant();
@@ -65,9 +65,9 @@ const videoToken = (identity, room, config) => {
   return token;
 };
 
-app.use(express.static(path.join(__dirname, "build")));
+app.use(express.static(path.join(__dirname, 'build')));
 
-app.get("/token", (req, res) => {
+app.get('/token', (req, res) => {
   const { identity, roomName } = req.query;
   const token = new AccessToken(
     twilioAccountSid,
@@ -84,27 +84,22 @@ app.get("/token", (req, res) => {
   console.log(`issued token for ${identity} in room ${roomName}`);
 });
 
-app.get("/video/token", (req, res) => {
+app.get('/video/token', (req, res) => {
   const identity = req.query.identity;
   const room = req.query.room;
-  const token = videoToken(identity, room, {
-    twilio: { twilioAccountSid, twilioApiKeySID, twilioApiKeySecret },
-  });
+  const token = videoToken(identity, room, config);
   sendTokenResponse(token, res);
 });
 
-app.post("/video/token", (req, res) => {
-  console.log("What is req", req.body);
+app.post('/video/token', (req, res) => {
   const identity = req.body.identity;
   const room = req.body.room;
-  const token = videoToken(identity, room, {
-    twilio: { twilioAccountSid, twilioApiKeySID, twilioApiKeySecret },
-  });
+  const token = videoToken(identity, room, config);
   sendTokenResponse(token, res);
 });
 
-app.get("*", (_, res) =>
-  res.sendFile(path.join(__dirname, "build/index.html"))
+app.get('*', (_, res) =>
+  res.sendFile(path.join(__dirname, 'build/index.html'))
 );
 
-app.listen(8081, () => console.log("token server running on 8081"));
+app.listen(8081, () => console.log('token server running on 8081'));
